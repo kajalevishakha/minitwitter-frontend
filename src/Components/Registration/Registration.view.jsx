@@ -31,7 +31,6 @@ export class RegistrationPage extends Component {
         email: "",
         password: "",
       },
-      isSet:false,
     };
   }
 
@@ -41,48 +40,12 @@ export class RegistrationPage extends Component {
   }
 
 
-getResponse=response=>{
-
-    console.log('get response--',response)
-    console.log('id fetched from registraion response-->',response.data.id)
-    alert(`Hey ${this.state.firstname}.... Registration Successful! `);
-    
-}
-
-getErrorCode=code=>{
-
-    if (code === 400) {
-        alert(`Username Already Exist! `);
-    }
-    else if(code  === 406){
-        alert(`Special characters are not allowed! `);
-    }
-    else{
-        alert('Server Error!!')
-    }
-}
-
-apicall=()=>{
-
-    console.log('in api call function--')
-
-    return(
-        <div>
-            <RegistrationAPI 
-                    userDetails={this.state}
-                    returnResponse={this.getResponse}  
-                    returnErrorCode={this.getErrorCode} 
-            />
-        </div>
-    );
-
-}
   // Function to perform action on button click
   handleRegister = (event) => {
 
     event.preventDefault()
     this.props.userData(this.state)
-    this.setState({isSet:true})
+    
 
   }
 
@@ -231,11 +194,6 @@ apicall=()=>{
                 </button>
               ) : null
               }
-
-
-              {this.state.isSet===true ?
-              this.apicall():
-              null}
             </div>
           </form>
         </div>

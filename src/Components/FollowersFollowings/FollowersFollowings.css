@@ -20,33 +20,17 @@
     width: 50%;
     height: 50px;
     border: none;
-    background-color: #fff;
-    font-weight: bolder;
-    border-bottom:1px solid rgba(0,0,0,.1) ;
-}
-#btn-followings:hover{
-    width: 50%;
-    height: 50px;
-    border: none;
     color: rgb(35, 154, 233);
     background-color: rgb(206, 236, 255);
     font-weight: bolder;
     border-bottom:1px solid rgb(35, 154, 233) ;
 }
-#btn-followers:hover{
-    width: 50%;
-    height: 50px;
-    border: none;
-    color: rgb(35, 154, 233);
-    background-color: rgb(206, 236, 255);
-    font-weight: bolder;
-    border-bottom:1px solid rgb(35, 154, 233) ;
-}
+
 
 
 #followers-list{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     /* margin-left: 30px; */
     /* margin-right: 30px; */
     overflow: scroll;
@@ -56,13 +40,14 @@
 
 
 #followers-username{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bolder;
-    padding: 5px 0px;
+    padding: 10px 0px;
     margin-right: 30px;
     margin-left: 20px;
     color: rgb(240, 249, 255);
     border-bottom: 2px solid rgb(245, 245, 245);
+    
 }
 #followers-fullname{
     color: black;

@@ -1,106 +1,137 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import GetFollowersAPI from './../../APIs/GetFollowersAPI'
-import GetFollowingsAPI from './../../APIs/GetFollowingsAPI'
+import API_Calls from './../../APIs/API'
 import FollowersFollowingsPage from './FollowersFollowings.view'
-import UnfollowUserAPI from './../../APIs/UnfollowUserAPI'
+
 
 export class FollowersFollowings extends Component {
 
     constructor(props) {
         super(props)
-    
+        const{requestOf}=this.props.match.params
+        const{id}=this.props.userData
         this.state = {
+            
+             requestOf:requestOf,
+             id:id,
              followersFollowingsList:[],
              unfollowID:0,
              shouldCallUI:false,
-             shouldCallUnfollowAPI:false
+             followingsList:[]
         }
         
     }
     
 
-    setFollowersList=response=>{
-        console.log('list of followers from api--',response)
+    componentDidMount(){
+
+        const{requestOf,id}=this.state
+
+        if(requestOf==='followers'){
+
+            API_Calls.fetchFollowersAPI(id).then(response=>{
+                console.log('list of followers from api--',response)
+
+            if (response.status === 200) {
+                    this.setState(
+                    {
+                        followersFollowingsList: response.data,
+                        shouldCallUI:true
+                    })
+            }
+
+            })
+            .catch(code=>{
+                if (code === 400 || code === 401) {
+                    this.props.history.push("/");
+                }
+            })
+
+        }
+        else{
+
+            const{id}=this.props.match.params
+
+            API_Calls.fetchFollowingsAPI(id).then(response=>{
+                console.log('list of followings from api--',response)
+
+            if (response.status === 200) {
+                    this.setState(
+                    {
+                        followersFollowingsList: response.data,
+                        shouldCallUI:true
+                    })
+            }
+
+            })
+            .catch(code=>{
+                if (code === 400 || code === 401) {
+                    this.props.history.push("/");
+                }
+            })
+
+        }
+
+        
+        API_Calls.fetchFollowingsAPI(this.props.match.params.id).then(response=>{
+            console.log('list of followings from api--',response)
 
         if (response.status === 200) {
                 this.setState(
-                  {
-                    followersFollowingsList: response.data,
-                  },
-                  () =>
-                    console.log("followers data-->", this.state.followers)
-                );
-              }
-        if (response["status"] === 206) {
-                console.log(response.data.message);
-    
-                return response.data.message;
-              }
+                {
+                    followingsList: response.data,
+                })
+        }
 
-        this.setState({shouldCallUI:true})
-    }
-    errorCode=code=>{
-          if (code === 400 || code === 401) {
+        })
+        .catch(code=>{
+            if (code === 400 || code === 401) {
                 this.props.history.push("/");
             }
+        })
+
     }
+
     callUnfollowUserAPI=userid=>{
-        console.log('user to be unfollow--',userid)
-        this.setState({shouldCallUnfollowAPI:true,unfollowID:userid})
-    }
-    userUnfollowed=response=>{
+        const{id}=this.props.userData
+        const userData={
+            logid:id,
+            unfollowid:userid
+        }
+        API_Calls.unfollowUserAPI(userData).then(status=>{
 
-        if (response["status"] === 204) {
-            console.log("UnFollowed Successfully!");
+            if (status === 204) {
+                console.log("UnFollowed Successfully!");
+              }
+            else if (status === 208) {
+                console.log("Please follow again!");
+              }
             this.props.history.push("/minitwitter/timeline/");
-          }
-          if (response["status"] === 208) {
-            console.log("Please follow again!");
-            this.props.history.history.push("/minitwitter/timeline/");
-          }
 
-
-
+        })
+        .catch(err=>{
+            console.log(err)
+            alert('Sorry cannot unfollow!')
+        })
     }
+    
     render() {
         console.log('props of followersfollowings parent--',this.props)
-        const{requestOf,id}=this.props.match.params
-        const{unfollowID,shouldCallUI,shouldCallUnfollowAPI,followersFollowingsList}=this.state
+        
+        const{requestOf,shouldCallUI,followersFollowingsList,followingsList}=this.state
         return (
             <div>
-                {
-                    requestOf==='followers' ?
-                    <GetFollowersAPI id={id}
-                                    returnResponse={this.setFollowersList}
-                                     errorCode={this.errorCode}
-                    />:
-                    <GetFollowingsAPI id={id}
-                                    returnResponse={this.setFollowersList}
-                                     errorCode={this.errorCode}
-                    />
-                }
-
+                
                 {
                     shouldCallUI===true ?
                     <FollowersFollowingsPage dataOf={requestOf}
                                         userList={followersFollowingsList}
+                                        followingsList={followingsList}
                                         userData={this.props.userData}
                                         unfollowUser={this.callUnfollowUserAPI}
                     />:
                     null
                 }
-                {
-                    shouldCallUnfollowAPI===true ?
-                    <UnfollowUserAPI unfollowid={unfollowID}
-                                     returnResponse={this.userUnfollowed}
-                                     errorCode={this.errorCode}
-                                     logid={this.props.userData.id}
-                    />:
-                    null
-                }
-
-
                 
             </div>
         )

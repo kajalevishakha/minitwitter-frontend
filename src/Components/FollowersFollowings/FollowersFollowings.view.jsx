@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import './FollowersFollowings.css'
 
+
 export class FollowersFollowingsPage extends Component {
 
     constructor(props) {
@@ -11,13 +12,27 @@ export class FollowersFollowingsPage extends Component {
 
         this.state = {
              userList:userList,
-             listOf:dataOf
+             listOf:dataOf,
         }
     }
     
     handleUnfollow=userid=>{
 
       this.props.unfollowUser(userid)
+    }
+    
+    isFollowing=username=>{
+      const{followingsList}=this.props
+      console.log("checkFollowing array in followers file-->", followingsList);
+
+    let item = followingsList.filter(
+      (index) => index.following.username === username
+    );
+    console.log("check item->", item);
+    if (item.length === 0) {
+      return true;
+    } 
+    else {return false;}
     }
   
 
@@ -31,7 +46,9 @@ export class FollowersFollowingsPage extends Component {
                 {firstname} {lastname}
               </div>
               <div id="logeed-username"> @{username}</div>
-              <div id="upper-buttons">
+              {
+                listOf==='followers' ?
+                 <div id="upper-buttons">
                 <button
                   id="btn-followers"
                   onClick={() => {
@@ -41,6 +58,9 @@ export class FollowersFollowingsPage extends Component {
                   {" "}
                   Followers
                 </button>
+              </div> :
+
+               <div id="upper-buttons">
                 <button
                   id="btn-followings"
                   onClick={() => {
@@ -49,7 +69,10 @@ export class FollowersFollowingsPage extends Component {
                 >
                   Followings
                 </button>
-              </div>
+              </div> 
+                
+                
+              }
               {console.log('list of-----',listOf)}
               {
                   listOf==='followers' ?(
@@ -88,7 +111,7 @@ export class FollowersFollowingsPage extends Component {
                           <button
                             type="button"
                             onClick={() => {
-                              this.unfollowUserBtn(follow.following.id);
+                              this.handleUnfollow(follow.id);
                             }}
                           >
                             unfollow

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import EditProfileAPI from './../../APIs/EditProfileAPI'
+import {withRouter} from 'react-router-dom'
+import API_Calls from '../../APIs/API'
 import EditProfilePage from './EditProfile.view'
 
 export class EditProfile extends Component {
@@ -7,62 +8,67 @@ export class EditProfile extends Component {
     constructor(props) {
         super(props)
     
+        const{id}=this.props.match.params
         this.state = {
 
             firstname:'',
             lastname:'',
             username:'',
             bio:null,
-            id:0,
-            edited:'',
-            shouldRender:false,
-            shouldCallSaveEditAPI:true
+            id:id,
+            shouldCallUI:false,
              
         }
-        console.log('constructor of edit profile--')
     }
     
 
-    componentWillMount(){
-        console.log('props of edit profile--',this.props)
-    }
+    componentDidMount(){
+        const{id}=this.state
 
-    setUserData=response=>{
-        console.log('response from edit profile api-->',response)
-        this.setState({
-                  firstname: response.data.user["first_name"],
-                  lastname: response.data.user["last_name"],
-                  username: response.data.user["username"],
-                  bio: response.data["bio"],
-                  id: response.data.user["id"],
-                  shouldCallSaveEditAPI:false,
-                  shouldRender:true,
-                })
-        
-    }
+        API_Calls.fetchProfileAPI(id).then(response=>{
+            console.log('respose of profile api in menu--',response)
+            this.setState({
+                firstname: response.data.user["first_name"],
+                lastname: response.data.user["last_name"],
+                username: response.data.user["username"],
+                bio: response.data["bio"],
+                shouldCallUI:true
+              })
+        })
+        .catch(code=>{
 
-    errorCode=code=>{
-        console.log(code)
-          if (code === 504 || code===401 || code===400) {
+            if (code === 504 || code===401 || code===400) {
                 this.props.history.push("/");
               }
-        this.setState({shouldCallSaveEditAPI:false})
+
+        })
     }
 
-    saveBio=bio=>{
-        console.log('edited bio in parent edit profile',bio)
-        this.setState({bio:bio, shouldCallSaveEditAPI:true},
-            ()=>console.log('bio save in set state--',this.state.bio))
 
-        
-        
+    saveBio=bio=>{
+
+        const{id}=this.state
+        const userData={
+            bio:bio,
+            id:id
+        }
+        console.log('edited bio in parent edit profile',bio)
+        API_Calls.editProfileAPI(userData).then(status=>{
+            console.log('status of edit api--',status)
+            if(status===200){
+                this.props.history.push('/minitwitter/userprofile/'+id)
+            }
+        })
+        .catch(err=>{
+            console.log(err)
+            alert('changes not saved!')
+        })
     }
 
 
     
     render() {
-        const userid=this.props.match.params.id
-        const{firstname,lastname,username,bio,id,shouldRender,shouldCallSaveEditAPI}=this.state
+        const{firstname,lastname,username,bio,id,shouldCallUI}=this.state
         const userData={
             firstname:firstname,
             lastname:lastname,
@@ -73,19 +79,11 @@ export class EditProfile extends Component {
         
         return (
             <div>
+                
                 {
-                    shouldCallSaveEditAPI===true?
-                    <EditProfileAPI id={userid}
-                        bio={this.state.bio}
-                        returnResponse={this.setUserData}
-                        errorCode={this.errorCode}
-                    />:
-                    null
-                }
-                {
-                    shouldRender===true ?
+                    shouldCallUI===true ?
                     <EditProfilePage userData={userData}
-                        saveBio={this.saveBio}
+                                    saveBio={this.saveBio}
                     />:
                     null
 
@@ -98,4 +96,4 @@ export class EditProfile extends Component {
     }
 }
 
-export default EditProfile
+export default withRouter(EditProfile)

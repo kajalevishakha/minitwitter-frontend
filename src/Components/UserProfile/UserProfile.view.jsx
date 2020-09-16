@@ -21,7 +21,7 @@ export class UserProfilePage extends Component {
             
              
         }
-        console.log('props of view-user profile-->',this.props)
+        
     }
 
 

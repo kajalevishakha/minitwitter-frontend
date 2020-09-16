@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
+import {Link,withRouter} from 'react-router-dom'
 import './Timeline.css'
 
 export class TimelinePage extends Component {
@@ -10,6 +10,10 @@ export class TimelinePage extends Component {
              timelineContent:this.props.timelineContent
         }
         console.log('timeline array--',this.state.timelineContent)
+    }
+
+    handleViewProfile=userid=>{
+      this.props.history.push('/minitwitter/userprofile/'+userid)
     }
     
     render() {
@@ -32,7 +36,7 @@ export class TimelinePage extends Component {
                           <Link
                             id="tweet-user-name"
                             onClick={() => {
-                              this.viewProfile(tweet.user.id);
+                              this.handleViewProfile(tweet.user.id);
                             }}
                           >
                             <span>@{tweet.user.username}</span>
@@ -51,4 +55,4 @@ export class TimelinePage extends Component {
       }
 }
 
-export default TimelinePage
+export default withRouter(TimelinePage)

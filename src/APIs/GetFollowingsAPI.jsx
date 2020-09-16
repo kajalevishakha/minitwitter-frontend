@@ -10,6 +10,7 @@ export class GetFollowingsAPI extends Component {
         const id=this.props.id
 
         console.log("id in get following api--",this.props)
+        
         axios.defaults.headers = {
             "Content-Type": "application/json",
             Authorization: "token " + localStorage.getItem("token"),

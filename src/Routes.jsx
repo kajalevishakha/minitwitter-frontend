@@ -45,22 +45,6 @@ export default class Routes extends Component {
         })
     }
 
-    // followingData=data=>{
-
-    //     console.log('following array ->',data)
-    //     data.map(val=><div>{console.log(val.following.first_name)}</div>)
-    //     this.setState({
-
-    //         followingData:Object.assign([],data)
-
-    //     })
-        
-    //     console.log('in route follow-',this.state.followingData)
-
-        
-        
-        
-    // }
 
 
     components(){

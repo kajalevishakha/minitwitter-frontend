@@ -1,9 +1,8 @@
 
 import React, { Component } from 'react'
+import {withRouter} from 'react-router-dom'
 import './Login.css';
-import axios from 'axios'
-import history from './../../History';
-import {loginapi} from './../../APIs/API'
+import API_Calls from './../../APIs/API.js'
 
 
 // This component renders login page on browser
@@ -13,96 +12,33 @@ class Login extends Component {
        
         this.state = {
              userName:'',
-             passWord:''
-             
-             
+             passWord:'',
         }
     }
    
     handleLogIN=event=>{
 
+        const{userName,passWord,token}=this.state
+
         const loginCredentials={
-            username:this.state.userName,
-            password:this.state.passWord
+            username:userName,
+            password:passWord
         }
 
-       loginapi(loginCredentials).then(response=>{
-           console.log('return response--',response)
+        API_Calls.loginapi(loginCredentials)
+       .then(response=>{
+           console.log('return response--',response.token)
+           this.props.getCurrentUser(response.token)
+           this.props.history.push('/minitwitter/timeline/')
        })
        .catch(error=>{
            console.log('error',error)
+           alert('Please enter valid credentials!')
        })
         
+       
 
     }
-
-    // // Function to perform action on button click
-    // handleEvent=event=>{
-
-    //     localStorage.clear('token')
-    //     axios
-    //     .post('http://127.0.0.1:8020/minitwitter/login/',{'username':this.state.userName,'password':this.state.passWord}) // link of backend api
-    //     .then(response=>{
-    //         console.log('login response-',response);
-           
-    //             if(response['status'] == 200){
-    //             const userToken=response.data['token']
-    //             localStorage.setItem('token',userToken);
-    //             axios.defaults.headers = {
-    //                 'Content-Type': 'application/json',
-    //                 Authorization: "token "+localStorage.getItem('token')
-    //             }
-    //             axios
-    //             .get('http://127.0.0.1:8020/minitwitter/current_user/')
-    //             .then(response=>{
-
-    //                 console.log('response of current_user api-',response);
-    //                 const userdata={
-    //                     firstname:response.data.first_name,
-    //                     lastname:response.data.last_name,
-    //                     username:response.data.username,
-    //                     id:response.data.id
-    //                 }
-    //                 console.log('data after logged in-',userdata)
-    //                 localStorage.setItem('id',userdata.id);
-    //                 history.push('/minitwitter/timeline/')
-
-    //             })
-    //             // alert(`Welcome ${this.state.userName}  !`)
-    //             // event.preventDefault()
-       
-    //             }
-    //             // event.preventDefault()
-           
-
-
-    //     })
-    //     .catch(error=>{
-    //         console.log(error.response['status']);
-    //         if(error.response['status'] === 400){
-    //             alert(`Empty feilds not allowed !`)
-  
-    //         }
-    //         else if(error.response['status'] === 404){
-    //            alert(`Please fill details again !`)
-    //            history.push('/LoginPage')
-  
-    //        }
-    //        else if(error.response['status'] === 401){
-    //         // alert(`Please fill details again !`)
-    //         history.push('/')
-
-    //     }
-           
-           
-    //     })
-
-         
-       
-    //     event.preventDefault()
-       
-       
-    // }
     // Function to perform action onChange event for feild of username
     changeEventUserName=event=>{
         this.setState({
@@ -154,7 +90,7 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default withRouter(Login)
 
 
 

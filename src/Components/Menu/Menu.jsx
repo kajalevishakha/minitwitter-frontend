@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import CurrentUserAPI from './../../APIs/CurrentUserAPI'
+import API_Calls from './../../APIs/API'
 import MenuPage from './Menu.view'
-import PostTweetAPI from './../../APIs/PostTweetAPI'
-import GetAllUserAPI from './../../APIs/GetAllUserAPI'
-import FollowUserAPI from './../../APIs/FollowUserAPI'
-import GetFollowingsAPI from './../../APIs/GetFollowingsAPI'
+import axios from 'axios'
+
+
 
 export class Menu extends Component {
 
@@ -29,82 +28,93 @@ export class Menu extends Component {
        
     }
     
-    setLoggedUserData=response=>{
-        console.log('logged user data from current user api-->',response)
-        this.setState({
-            username:response.data.username,
-            firstname:response.data.first_name,
-            lastname:response.data.last_name,
-            id:response.data.id,
-            
-        },
-        ()=>console.log('ckecking set data-->',this.state.username))
 
-        this.props.loggedUserData(this.state)
+    componentDidMount(){
+        console.log('component did mount of menu parent')
+        this.callCurrentUserAPI()
     }
 
-    checkErrorCode=code=>{
+    callCurrentUserAPI=()=>{
 
-        console.log('error code-->',code)
+        API_Calls.currentUserAPI().then(response=>{
+            console.log('response of current user api--',response)
+            this.setState({
+                firstname:response.data.first_name,
+                lastname:response.data.last_name,
+                username:response.data.username,
+                id:response.data.id
+            },
+            ()=>{
+                this.props.loggedUserData(this.state)
+                this.callRequired()
+            })
 
-        if(code===400 || code===401){
-        this.props.history.push('/')
-        }
+        })
+        .catch(error=>{
+            console.log(error)
+            if(error===400 || error===401){
+                this.props.history.push("/")
+            }
+        })
 
     }
-    
+
+    callRequired=()=>{
+        const{id,allUsers}=this.state
+
+        axios.all([API_Calls.fetchAllUsersAPI(),API_Calls.fetchFollowingsAPI(id)]).then(response=>{
+            console.log('response of axios all',response)
+            this.setState({
+                allUsers:response[0]['data'],
+                followingsList:response[1]['data'],
+                shouldCallUI:true
+            })
+        })
+        .catch(err=>{
+            console.log('err',err)
+                if(err===400 || err===401){
+                this.props.history.push("/")
+            }
+        })
+    }
+
+   callFollowUserAPI=followid=>{
+
+    const{id}=this.state
+
+        API_Calls.followUserAPI(followid).then(response=>{
+            console.log('response of follow user api in menu--',response)
+            this.props.history.push('/minitwitter/'+'followings'+'/'+id)
+        })
+        .catch(err=>{
+            console.log('err',err)
+                if(err===400 || err===401){
+                this.props.history.push("/")
+            }
+        })
+    }
 
     postTweet=tweet=>{
 
+        const{id}=this.state
         console.log('tweet in parent Menu--',tweet)
-        this.setState({tweet:tweet , shouldCallPostTweetAPI:true})
-    }
+        API_Calls.postTweetAPI(tweet).then(status=>{
+            if(status===201){
+                this.props.history.push('/minitwitter/userprofile/'+id)
+            }
 
-    checkResponse=response=>{
-
-        console.log('response of post tweet api-- ',response)
-
-        if(response['status']===201){
-
-            this.props.history.push('/minitwitter/userprofile/'+this.state.id)
-
-        }
-    }
-
-    setAllUsersData=response=>{
-        console.log('all users response from api--',response)
-          this.setState({allUsers: response.data, shouldCallFollowingsAPI:true})
-    }
-
-    callFollowUserAPI=userid=>{
-        console.log('user to be followed--',userid)
-        this.setState({shouldCallFollowUserAPI:true,userToFollow:userid})
-    }
-
-    setFollowingsList=response=>{
-        console.log('followings response from api--',response)
-        this.setState({followingsList:response.data,shouldCallUI:true})
+        })
+        .catch(err=>{
+            console.log('err',err)
+                if(err===400 || err===401){
+                alert('something went wrong!')
+            }
+        })
         
-
     }
-
-    userFollowed=response=>{
-        console.log('response of follow user api--',response)
-        if (response["status"] === 201) {
-            console.log("Followed Successfully!");
-            this.props.history.push("/minitwitter/timeline/");
-          }
-        if (response["status"] === 208) {
-            console.log("already followed!");
-            this.props.history.push("/minitwitter/timeline/");
-          }
-    }
-    
-      
-    
 
     render() {
-        const{shouldCallUI,shouldCallPostTweetAPI,shouldCallFollowingsAPI,allUsers,followingsList,shouldCallFollowUserAPI,userToFollow}=this.state
+        const{shouldCallUI,allUsers,followingsList,userToFollow}=this.state
         let loggedUserData={
             firstname:this.state.firstname,
             lastname:this.state.lastname,
@@ -115,23 +125,7 @@ export class Menu extends Component {
         
         return (
             <div>
-                <CurrentUserAPI getLoggedUser={this.setLoggedUserData}
-                                    errorCode={this.checkErrorCode}/>
-
-                <GetAllUserAPI returnResponse={this.setAllUsersData}
-                                    errorCode={this.checkErrorCode}
-                />
-
-                {
-                    shouldCallFollowingsAPI===true ?
-                    <GetFollowingsAPI id={loggedUserData.id}
-                                  returnResponse={this.setFollowingsList}
-                                  errorCode={this.checkErrorCode}
-                    />:
-                    null
-                }
-
-
+                
                 {
                     shouldCallUI===true ?
                     <MenuPage loggedUserData={loggedUserData}
@@ -144,22 +138,8 @@ export class Menu extends Component {
                 />:
                     null
                 }
+               
 
-                {   
-                    shouldCallPostTweetAPI===true ?
-                    <PostTweetAPI tweet={this.state.tweet}
-                                    returnResponse={this.checkResponse}
-                     />:
-                    null
-                }
-                {
-                    shouldCallFollowUserAPI===true ?
-                    <FollowUserAPI id={userToFollow}
-                                returnResponse={this.userFollowed}
-                                errorCode={this.errorCode}
-                    />:
-                    null
-                }
                 
                 
             </div>

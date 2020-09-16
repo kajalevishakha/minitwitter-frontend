@@ -75,7 +75,6 @@ export class MenuPage extends Component {
     changeEvent=event=>{
         
         const{value}=event.target
-        console.log(value.length)
         this.setState({tweetError:null})
         if(value.length>100){
 
@@ -100,16 +99,17 @@ export class MenuPage extends Component {
 
         const{followingsList}=this.state
         
-        console.log('checkFollowing username-->',username)
+        // console.log('checkFollowing username-->',username)
 
-        console.log('followings list in check following--',followingsList)
+        // console.log('followings list in check following--',followingsList)
 
         let item=followingsList.filter(index=>index.following.username===username)
-        console.log('check item->',item)
+        // console.log('check item->',item)
         if(item.length===0){
             return true;
         }
         else{return false;}
+        
         
     }
 
