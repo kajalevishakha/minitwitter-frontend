@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
+import {Link,withRouter} from 'react-router-dom'
 import './FollowersFollowings.css'
 
 
@@ -16,9 +16,13 @@ export class FollowersFollowingsPage extends Component {
         }
     }
     
-    handleUnfollow=userid=>{
+    // handleUnfollow=userid=>{
 
-      this.props.unfollowUser(userid)
+    //   this.props.unfollowUser(userid)
+    // }
+
+    handleFollowing=id=>{
+      this.props.history.push('/minitwitter/'+'followings'+'/'+id)
     }
     
     isFollowing=username=>{
@@ -38,7 +42,7 @@ export class FollowersFollowingsPage extends Component {
 
     render() {
         const{userList,listOf}=this.state
-        const{firstname,lastname,username}=this.props.userData
+        const{firstname,lastname,username,id}=this.props.userData
         return (
           <div>
             <div className="UserFollowers">
@@ -111,10 +115,10 @@ export class FollowersFollowingsPage extends Component {
                           <button
                             type="button"
                             onClick={() => {
-                              this.handleUnfollow(follow.id);
+                              this.handleFollowing(id)
                             }}
                           >
-                            unfollow
+                            following
                           </button>
                         </div>
                       )}
@@ -175,4 +179,4 @@ export class FollowersFollowingsPage extends Component {
       }
 }
 
-export default FollowersFollowingsPage
+export default withRouter(FollowersFollowingsPage)

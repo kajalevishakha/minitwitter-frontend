@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
+import axios from 'axios'
 import API_Calls from './../../APIs/API'
 import FollowersFollowingsPage from './FollowersFollowings.view'
 
@@ -8,8 +9,8 @@ export class FollowersFollowings extends Component {
 
     constructor(props) {
         super(props)
-        const{requestOf}=this.props.match.params
-        const{id}=this.props.userData
+        const{requestOf,id}=this.props.match.params
+        console.log('object userdata--',this.props.loggedUserId)
         this.state = {
             
              requestOf:requestOf,
@@ -26,20 +27,18 @@ export class FollowersFollowings extends Component {
     componentDidMount(){
 
         const{requestOf,id}=this.state
+        // const{id}=this.props.match.params
+        // console.log('userid--',this.props.userData.id)
 
         if(requestOf==='followers'){
 
-            API_Calls.fetchFollowersAPI(id).then(response=>{
-                console.log('list of followers from api--',response)
-
-            if (response.status === 200) {
-                    this.setState(
-                    {
-                        followersFollowingsList: response.data,
-                        shouldCallUI:true
-                    })
-            }
-
+            axios.all([API_Calls.fetchFollowersAPI(id),API_Calls.fetchFollowingsAPI(id)]).then(response=>{
+                console.log('response of both followers followings--',response)
+                this.setState({
+                    followersFollowingsList:response[0]['data'],
+                    followingsList:response[1]['data'],
+                    shouldCallUI:true
+                })
             })
             .catch(code=>{
                 if (code === 400 || code === 401) {
@@ -48,6 +47,7 @@ export class FollowersFollowings extends Component {
             })
 
         }
+
         else{
 
             const{id}=this.props.match.params
@@ -71,24 +71,6 @@ export class FollowersFollowings extends Component {
             })
 
         }
-
-        
-        API_Calls.fetchFollowingsAPI(this.props.match.params.id).then(response=>{
-            console.log('list of followings from api--',response)
-
-        if (response.status === 200) {
-                this.setState(
-                {
-                    followingsList: response.data,
-                })
-        }
-
-        })
-        .catch(code=>{
-            if (code === 400 || code === 401) {
-                this.props.history.push("/");
-            }
-        })
 
     }
 
