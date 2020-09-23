@@ -9,7 +9,7 @@ export class UserProfilePage extends Component {
         super(props)
 
         const{firstname,lastname,username,bio,id,tweets}=this.props.userData
-    
+        console.log('VIEW component-- props in render --',this.props)
         this.state = {
 
             firstname:firstname,

@@ -9,7 +9,9 @@ export class UserProfile extends Component {
     constructor(props) {
         super(props)
 
+        console.log('parent props--',this.props)
         const{id}=this.props.match.params
+        console.log('here id in parent profile--',id)
     
         this.state = {
 
@@ -19,8 +21,29 @@ export class UserProfile extends Component {
              lastname:'',
              username:'',
              id:id,
-             bio:''
+             bio:'',
+             test:{}
         }
+    }
+
+    
+
+
+     static call=id=>{
+
+        return API_Calls.fetchProfileAPI(id).then(response=>{
+            console.log('respose of profile api in --',response)
+            return response
+        })
+        .catch(code=>{
+
+            if (code === 504 || code===401 || code===400) {
+                // this.props.history.push("/");
+              }
+              return code
+
+        })
+
     }
 
     componentDidMount(){
@@ -49,18 +72,19 @@ export class UserProfile extends Component {
     
     render() {
 
-        const{shouldCallUI}=this.state
+        const{shouldCallUI,test,firstname,lastname,username,tweets}=this.state
 
         return (
             <div>
-                
                 {
-                    shouldCallUI===true ?
-                    <UserProfilePage userData={this.state}
+                    firstname!== '' ?
+                    <UserProfilePage 
+                    userData={this.state}
                     loggedUserName={this.props.loggedUserName}
                     
-                    />:
-                    null
+                    />
+                    :
+                   null
                 }
                 
             </div>
