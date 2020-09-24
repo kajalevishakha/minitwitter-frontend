@@ -5,33 +5,14 @@ import './UserProfile.css'
 
 export class UserProfilePage extends Component {
 
-    constructor(props) {
-        super(props)
-
-        const{firstname,lastname,username,bio,id,tweets}=this.props.userData
-        console.log('VIEW component-- props in render --',this.props)
-        this.state = {
-
-            firstname:firstname,
-            lastname:lastname,
-            username:username,
-            bio:bio,
-            id:id,
-            tweets:tweets
-            
-             
-        }
-        
-    }
-
-
     handleEdit=event=>{
       event.preventDefault()
-      this.props.history.push("/minitwitter/userprofile/edit/" + this.state.id);
+      this.props.history.push("/minitwitter/userprofile/edit/" + this.props.loggedUserId);
     }
+    
 
     render() {
-        const { tweets, firstname, lastname, username, bio } = this.state;
+        const { tweets, firstname, lastname, username, bio } = this.props.userData;
         return (
           <div>
             <div className="Profile">
@@ -70,7 +51,7 @@ export class UserProfilePage extends Component {
                   ))}
                 </h4>
               </div>
-              {this.props.loggedUserName === this.state.username ? (
+              {this.props.loggedUserName === username ? (
                 <button id="edit" type="button" onClick={this.handleEdit}>
                   Edit
                 </button>
