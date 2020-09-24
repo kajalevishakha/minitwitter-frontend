@@ -42,21 +42,16 @@ export class UserProfile extends Component {
       });
   };
 
-  static getDerivedStateFromProps(state, props) {
-    // console.log('states getDerived method in parent --',state)
-    const id = state.match.params.id;
-    return { id: id };
-  }
 
   componentDidUpdate(props, state) {
     // console.log('prev states in component did update--',state)
     // console.log('prev props in component did update--',props)
     // console.log('current state--',this.state)
-    const { id } = this.state;
+    // console.log('current props--',this.props)
     const prevPropID = props.match.params.id;
     const currentPropID = this.props.match.params.id;
     if (currentPropID !== prevPropID) {
-      this.makeAPICall(id);
+      this.makeAPICall(currentPropID);
     }
   }
 
