@@ -5,74 +5,97 @@ import API_Calls from './../../APIs/API'
 import FollowersFollowingsPage from './FollowersFollowings.view'
 
 
+
+
 export class FollowersFollowings extends Component {
 
     constructor(props) {
         super(props)
         const{requestOf,id}=this.props.match.params
-        console.log('object userdata--',this.props.loggedUserId)
         this.state = {
             
              requestOf:requestOf,
              id:id,
              followersFollowingsList:[],
              unfollowID:0,
-             shouldCallUI:false,
-             followingsList:[]
+             followingsList:[],
+            
         }
         
     }
-    
 
+    componentDidUpdate(prevProps,prevState){
+        const{match,location,history}=this.props
+        const prevRequestOf= prevProps.match.params.requestOf
+        const currentRequestOf=match.params.requestOf
+        const {id}=match.params
+        if(prevRequestOf !== currentRequestOf){
+            this.callFollowersFollowingAPI(currentRequestOf,id)
+        }
+        else if(location.state !==undefined && currentRequestOf === 'followings'){
+            console.log('request in if condition--',currentRequestOf)
+            this.callFollowersFollowingAPI('followings',id)
+            history.push('/minitwitter/'+'followings'+'/'+id)
+        }
+    }
+
+    
     componentDidMount(){
 
         const{requestOf,id}=this.state
-        // const{id}=this.props.match.params
-        // console.log('userid--',this.props.userData.id)
+        this.callFollowersFollowingAPI(requestOf,id)
 
-        if(requestOf==='followers'){
+    }
 
-            axios.all([API_Calls.fetchFollowersAPI(id),API_Calls.fetchFollowingsAPI(id)]).then(response=>{
+ callFollowersFollowingAPI=(request,id)=>{
+     this.setState({followersFollowingsList:[]})
+        if(request==='followers'){
+
+            return axios.all([API_Calls.fetchFollowersAPI(id),API_Calls.fetchFollowingsAPI(id)]).then(response=>{
                 console.log('response of both followers followings--',response)
                 this.setState({
                     followersFollowingsList:response[0]['data'],
                     followingsList:response[1]['data'],
-                    shouldCallUI:true
+                    requestOf:request
                 })
+                return response
             })
             .catch(code=>{
                 if (code === 400 || code === 401) {
                     this.props.history.push("/");
                 }
+                return code
             })
+            
 
         }
 
         else{
-
-            const{id}=this.props.match.params
-
-            API_Calls.fetchFollowingsAPI(id).then(response=>{
+           return API_Calls.fetchFollowingsAPI(id).then(response=>{
                 console.log('list of followings from api--',response)
 
             if (response.status === 200) {
                     this.setState(
                     {
                         followersFollowingsList: response.data,
-                        shouldCallUI:true
+                        requestOf:request
                     })
             }
+            return response
 
             })
             .catch(code=>{
                 if (code === 400 || code === 401) {
                     this.props.history.push("/");
                 }
+            return code
             })
 
         }
-
+        
     }
+    
+
 
     callUnfollowUserAPI=userid=>{
         const{id}=this.props.userData
@@ -88,7 +111,7 @@ export class FollowersFollowings extends Component {
             else if (status === 208) {
                 console.log("Please follow again!");
               }
-            this.props.history.push("/minitwitter/timeline/");
+            this.props.history.push("/minitwitter/timeline/",{status});
 
         })
         .catch(err=>{
@@ -96,24 +119,43 @@ export class FollowersFollowings extends Component {
             alert('Sorry cannot unfollow!')
         })
     }
+
+    callFollowUserAPI=followid=>{
+
+        const{id}=this.state
+    
+            API_Calls.followUserAPI(followid).then(response=>{
+                console.log('response of follow user api in menu--',response)
+                this.setState({shouldCallFollowUserAPI:true})
+                this.props.history.push('/minitwitter/'+'followings'+'/'+id,{response})
+            })
+            .catch(err=>{
+                console.log('err',err)
+                    if(err===400 || err===401 || err===500){
+                    this.props.history.push("/")
+                }
+            })
+        }
     
     render() {
-        console.log('props of followersfollowings parent--',this.props)
         
-        const{requestOf,shouldCallUI,followersFollowingsList,followingsList}=this.state
+        const{requestOf,followersFollowingsList,followingsList}=this.state
         return (
             <div>
-                
-                {
-                    shouldCallUI===true ?
-                    <FollowersFollowingsPage dataOf={requestOf}
+                 
+                     {
+                         followersFollowingsList.length>0 ?
+                         <FollowersFollowingsPage dataOf={requestOf}
                                         userList={followersFollowingsList}
                                         followingsList={followingsList}
                                         userData={this.props.userData}
                                         unfollowUser={this.callUnfollowUserAPI}
+                                        followUser={this.callFollowUserAPI}
+                                        
                     />:
-                    null
-                }
+                    <h1>LOADING</h1>
+                    }
+                    
                 
             </div>
         )

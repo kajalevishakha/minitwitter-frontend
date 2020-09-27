@@ -55,7 +55,26 @@ Directory-> Components
 
 Directory->APIs
 
-            API.js
+            ->RegistrationApi.jsx
+
+            ->LoginApi.jsx
+
+            ->GetTimelineApi.jsx
+
+            ->GetUserProfileApi.jsx
+
+            ->SetUserProfileApi.jsx
+
+            ->GetFollowingsApi.jsx
+
+            ->GetFollowersApi.jsx
+
+            ->FollowUserApi.jsx
+
+            ->UnfollowUserApi.jsx
+
+            ->DeleteTweetApi.jsx
+
 
 
 

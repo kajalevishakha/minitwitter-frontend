@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import "./Registration.css";
 import logo from './../../logo.png'
 import {withRouter} from 'react-router-dom'
-import  RegistrationAPI  from './../../APIs/RegistrationAPI'
+
 
 
 // regular expression for validating email-id entered by user

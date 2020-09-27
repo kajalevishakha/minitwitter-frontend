@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import {  Switch, Route, BrowserRouter as Router} from "react-router-dom";
 
+
 import Registration from './Components/Registration/Registration'
 import Login from './Components/Login/Login'
 import LandingPage from './Components/MinitwitterLandingpage/Landingpage.view'
@@ -11,12 +12,6 @@ import EditProfile from './Components/EditProfile/EditProfile'
 import UserProfile from './Components/UserProfile/UserProfile'
 import Timeline from './Components/Timeline/Timeline'
 import FollowersFollowings from './Components/FollowersFollowings/FollowersFollowings'
-
-
-
-
-
-
 
 export default class Routes extends Component {
 
@@ -47,6 +42,8 @@ export default class Routes extends Component {
 
     components(){
 
+        
+
         const{firstname,lastname,username,id}=this.state
         const userData={
             username:username,
@@ -54,9 +51,9 @@ export default class Routes extends Component {
             lastname:lastname,
             id:id
         }
-
+        
         return (
-            <Fragment>
+            <div>
 
                 
                     
@@ -72,7 +69,7 @@ export default class Routes extends Component {
                             />
                             
                             <Route exact path={`/minitwitter/userprofile/:id`} 
-                                    render={props=>(<UserProfile {...props} 
+                                    render={props=>(<UserProfile 
                                     loggedUserId={this.state.id}
                                     loggedUserName={this.state.username} 
                                     />)} 
@@ -105,7 +102,7 @@ export default class Routes extends Component {
                 
         
     
-            </Fragment>);
+            </div>);
     }
     
     
@@ -125,5 +122,6 @@ export default class Routes extends Component {
         )
     }
 }
+
 
 

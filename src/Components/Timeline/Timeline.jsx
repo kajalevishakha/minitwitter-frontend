@@ -26,7 +26,6 @@ export class Timeline extends Component {
             this.setState(
                 {
                   timelineContent: response.data,
-                  shouldCallUI:true
                 })
 
         })
@@ -44,14 +43,14 @@ export class Timeline extends Component {
     
     render() {
         
-        const{shouldCallUI}=this.state
+        const{timelineContent}=this.state
         
         return (
             <div>
                 {
-                    shouldCallUI===true ?
+                    timelineContent.length>0 ?
                     <TimelinePage timelineContent={this.state.timelineContent}/>:
-                    null  
+                    <h1>Loading </h1>
                 }
             </div>
         )

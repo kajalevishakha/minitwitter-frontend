@@ -1,6 +1,6 @@
 .timeline{
     top:0;
- height: 500px;
+ height: 460px;
  width: 540px;
  border: 1px solid rgba(0,0,0,.1);
  padding: 20px 28.77px;
@@ -19,10 +19,6 @@
     margin: 0%;
 }
 
-/* #tweets-timeline-content{
-    border-bottom: 2px solid rgba(0,0,0,.1);
-    padding-top: 3px;
-} */
 .fa-user-circle{
     font-size: 30px;
     padding-right: 10px;

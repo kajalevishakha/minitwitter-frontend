@@ -28,6 +28,17 @@ export class Menu extends Component {
        
     }
     
+    componentDidUpdate(prevProps,prevState){
+        console.log('prev props of menu--',prevProps)
+        console.log('current props of menu--',this.props)
+        console.log('prev states of menu--',prevState)
+        console.log('current state of menu--',this.state)
+        if(this.props.location.state!==undefined){
+            console.log('can make all user api call')
+            this.callRequired()
+            this.props.history.push("/minitwitter/timeline/")
+        }
+    }
 
     componentDidMount(){
         console.log('component did mount of menu parent')
@@ -42,7 +53,7 @@ export class Menu extends Component {
                 firstname:response.data.first_name,
                 lastname:response.data.last_name,
                 username:response.data.username,
-                id:response.data.id
+                id:response.data.id,
             },
             ()=>{
                 this.props.loggedUserData(this.state)
@@ -61,7 +72,6 @@ export class Menu extends Component {
 
     callRequired=()=>{
         const{id,allUsers}=this.state
-
         axios.all([API_Calls.fetchAllUsersAPI(),API_Calls.fetchFollowingsAPI(id)]).then(response=>{
             console.log('response of axios all',response)
             this.setState({
@@ -84,11 +94,12 @@ export class Menu extends Component {
 
         API_Calls.followUserAPI(followid).then(response=>{
             console.log('response of follow user api in menu--',response)
-            this.props.history.push('/minitwitter/'+'followings'+'/'+id)
+            this.setState({shouldCallFollowUserAPI:true})
+            this.props.history.push('/minitwitter/'+'followings'+'/'+id,{response})
         })
         .catch(err=>{
             console.log('err',err)
-                if(err===400 || err===401){
+                if(err===400 || err===401 || err===500){
                 this.props.history.push("/")
             }
         })
@@ -114,7 +125,7 @@ export class Menu extends Component {
     }
 
     render() {
-        const{shouldCallUI,allUsers,followingsList,userToFollow}=this.state
+        const{allUsers,followingsList,userToFollow}=this.state
         let loggedUserData={
             firstname:this.state.firstname,
             lastname:this.state.lastname,
@@ -127,12 +138,12 @@ export class Menu extends Component {
             <div>
                 
                 {
-                    shouldCallUI===true ?
+                    allUsers.length>0 ?
                     <MenuPage loggedUserData={loggedUserData}
                               postTweet={this.postTweet}
                               allUsers={allUsers}
                               followUser={this.callFollowUserAPI}
-                              followingsList={followingsList}
+                              
                               
                             
                 />:

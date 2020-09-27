@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react'
 import {Link,withRouter} from 'react-router-dom'
 import logo from './../../logo.png'
 import './Menu.css'
+import API_Calls from './../../APIs/API'
 
 export class MenuPage extends Component {
     
@@ -10,23 +11,17 @@ export class MenuPage extends Component {
         super(props)
 
 
-        const{allUsers,followingsList}=this.props
+        
     
         this.state = {
              tweets:'',
              tweetError:"",
-             allUsers:allUsers,
-             makeRequestOf:'',
-             followingsList:followingsList
+             searchValue:'',
+             searchResult:[],
+             showSearchResult:false
         }
-        console.log('all users props in menu view--',this.props.allUsers)
-        console.log('all followings props in menu view--',this.props.followingsList)
     }
     
-    // UNSAFE_componentWillMount(){
-    //     this.setState({followingsList:this.props.followingsList})
-    // }
-
     handleProfile=event=>{
         event.preventDefault()
         this.props.history.push('/minitwitter/userprofile/'+this.props.loggedUserData.id)
@@ -47,26 +42,28 @@ export class MenuPage extends Component {
 
     }
     handleViewProfile=userid=>{
+        console.log('userid--',userid)
         this.props.history.push('/minitwitter/userprofile/'+userid)
 
     }
     handleFollowings=event=>{
         event.preventDefault()
         this.props.history.push('/minitwitter/'+'followings'+'/'+this.props.loggedUserData.id)
-        window.location.reload(false);
+        // window.location.reload(false);
 
 
     }
     handleFollowers=event=>{
         event.preventDefault()
         this.props.history.push('/minitwitter/'+'followers'+'/'+this.props.loggedUserData.id)
-        window.location.reload(false);
+        // window.location.reload(false);
     }
     handleFollow=userid=>{
         this.props.followUser(userid)
         // window.location.reload(false);
         this.forceUpdate()
     }
+
     componentWillUnmount() {
         clearInterval(this.interval);
       }
@@ -95,23 +92,20 @@ export class MenuPage extends Component {
 
         
     }
-    checkFollowing=username=>{
-
-        const{followingsList}=this.state
-        
-        // console.log('checkFollowing username-->',username)
-
-        // console.log('followings list in check following--',followingsList)
-
-        let item=followingsList.filter(index=>index.following.username===username)
-        // console.log('check item->',item)
-        if(item.length===0){
-            return true;
-        }
-        else{return false;}
-        
-        
+    handleInputSearchChange=event=>{
+        const{value}=event.target
+        this.setState({searchValue:value})
     }
+    handleSearch=event=>{
+        event.preventDefault()
+        this.state.searchResult.push(this.state.searchValue)
+        API_Calls.searchAPI(this.state.searchValue)
+        console.log('search value',this.state.searchResult)
+        this.setState({showSearchResult:true})
+
+    }
+
+    
 
 
     render() {
@@ -119,7 +113,9 @@ export class MenuPage extends Component {
         // const{tweets,allUsers}=this.state
         //console.log('followingss->',this.props.followingData)
         const{firstname,lastname,username}=this.props.loggedUserData
-        const{tweets,allUsers}=this.state
+        const{tweets,searchValue,showSearchResult,searchResult}=this.state
+        const{allUsers}=this.props
+
         
         return (
         
@@ -212,42 +208,61 @@ export class MenuPage extends Component {
                 {/* Will render all available users on opposite side of navigation menu */}
                 <div className="searchUser">
                     <div className="searchBar">
-                        {/* <input type="text"
-                        placeholder="Search">
+                        <input type="text"
+                        value={searchValue}
+                        name="searchValue"
+                        onChange={this.handleInputSearchChange}
+                        placeholder="search">
                         </input>
-                        <button type="button">
-                            Search
-                        </button> */}
+                        {
+                            searchValue!==''?
+                            <button id='close-serach'
+                        onClick={()=>{this.setState({showSearchResult:false,searchValue:''})}}>
+                            <i class="far fa-times-circle"></i></button>:
+                            null
 
-                        <div className="users">
-                        <h2>Who to follow</h2>
-                            <h4 id="other-users-list">
-                            
-                             {allUsers.map((user) => (
-                                   <div id="for-each"> 
-                                        <h4 key={user.id}>
-                                            
-                                            <Link onClick={()=>{this.handleViewProfile(user.id)}}>
-                                            <div id="other-user-name">{user.username}</div>
-                                            </Link>
-                          
-                                                { this.checkFollowing(user.username)===true ?
-                                                <button id="follow-button" onClick={()=>{this.handleFollow(user.id)}}>follow</button>:
+                        }
+                        
+                        <button type="button"
+                        onClick={this.handleSearch}>
+                            search
+                        </button>
+                        {
+                            showSearchResult===true ?
+                            <div className="users">
+                                {searchResult.map((user,index)=>(
+                                    <div id="for-each">
+                                    <h4 key={index}>
+                                    {user}
+                                    </h4>
+                                </div>
 
-                                                <button id="follow-button"
-                                                onClick={()=>{this.props.history.push('/minitwitter/following/'+this.state.id)}} >
-                                                    following
-                                                </button>
+                                ))}
+                                
+
+                            </div>:
+                            <div className="users">
+                            <h2>Who to follow</h2>
+                                <h4 id="other-users-list">
+                                
+                                 {allUsers.map((user) => (
+                                       <div id="for-each"> 
+                                            <h4 key={user.id}>
                                                 
+                                                <Link onClick={()=>{this.handleViewProfile(user.id)}}>
+                                                <div id="other-user-name">{user.username}</div>
+                                                </Link>
+                                                <button id="follow-button" onClick={()=>{this.handleFollow(user.id)}}>follow</button>
+            
+                                            </h4>
+                                        </div> 
+                                    ))} 
+                                </h4>
+                            </div>
 
+                        }
 
-                                            }
-        
-                                        </h4>
-                                    </div> 
-                                ))} 
-                            </h4>
-                        </div>
+                        
                     </div>
 
 

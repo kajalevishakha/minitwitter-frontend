@@ -14,7 +14,8 @@ export class Registration extends Component {
              firstname:'',
              lastname:'',
              email:'',
-             password:''
+             password:'',
+             id:0
         }
     }
     
@@ -22,8 +23,9 @@ export class Registration extends Component {
     callRegistrationAPI=()=>{
         API_Calls.registrationAPI(this.state).then(response=>{
             console.log('response of registration api--',response)
-            if(response===201){
-                this.callLoginAPI()
+            if(response['status']===201){
+
+                this.callLoginAPI(response.data.id)
             }
         })
         .catch(error=>{
@@ -37,16 +39,17 @@ export class Registration extends Component {
         })
     }
 
-    callLoginAPI=()=>{
+    callLoginAPI=(id)=>{
         const{username,password}=this.state
         const loginCredentials={
             password:password,
             username:username
         }
+        localStorage.clear('token')
         API_Calls.loginapi(loginCredentials).then(response=>{
             console.log('response of login api--',response)
-            alert(`Hey {username}.. Registration Successful!`)
-            this.props.history.push("/minitwitter/timeline/")
+            alert(`Hey ${username}.. Registration Successful!`)
+            this.props.history.push("/minitwitter/newuser/"+id)
         })
         .catch(error=>{
             console.log('err of login api--',error)

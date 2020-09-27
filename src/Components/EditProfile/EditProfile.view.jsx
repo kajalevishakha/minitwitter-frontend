@@ -16,7 +16,9 @@ export class EditProfilePage extends Component {
             lastname:lastname,
             username:username,
             bio:bio,
-            id:id
+            id:id,
+            profilPic:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            showPic:false
              
         }
         console.log('props of view-edit profile-->',this.props)
@@ -36,16 +38,35 @@ export class EditProfilePage extends Component {
         
       }
     
+      selectImageHandler=event=>{
+
+        console.log('image selected--',event.target.files[0])
+        this.setState({profilPic:event.target.files[0]})
+      }
+      uploadImgHandler=()=>{
+        console.log('uploaded img--',this.state.profilPic.name)
+        this.props.setProfilePic(this.state.profilPic)
+        this.setState({showPic:true})
+        
+      }
     
 
     render() {
 
-        const{firstname,lastname,username,bio,id}=this.state
+        const{firstname,lastname,username,bio,id,showPic}=this.state
         return (
             <div>
               <div className="Profile-">
                 <div id="label-upper"> Edit Profile </div>
                 <div className="profileForm">
+                  {
+                    showPic===true ?
+                    <img src={this.state.profilPic.name } alt={'profile ic'}></img>:null
+                  }
+                  <input type='file'
+                  onChange={this.selectImageHandler}
+                  ></input>
+                  <button onClick={this.uploadImgHandler}>Upload</button>
                   <form>
                     <label id="label-create-edit-profile">First Name</label>
                     <input

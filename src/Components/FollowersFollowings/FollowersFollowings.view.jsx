@@ -16,23 +16,30 @@ export class FollowersFollowingsPage extends Component {
         }
     }
     
-    // handleUnfollow=userid=>{
+    handleUnfollow=userid=>{
 
-    //   this.props.unfollowUser(userid)
-    // }
+      this.props.unfollowUser(userid)
+    }
 
+    handleFollow=userid=>{
+      this.props.followUser(userid)
+    }
+    
     handleFollowing=id=>{
       this.props.history.push('/minitwitter/'+'followings'+'/'+id)
+    }
+    viewProfile=id=>{
+      this.props.history.push('/minitwitter/userprofile/'+id)
     }
     
     isFollowing=username=>{
       const{followingsList}=this.props
-      console.log("checkFollowing array in followers file-->", followingsList);
+      //console.log("checkFollowing array in followers file-->", followingsList);
 
     let item = followingsList.filter(
       (index) => index.following.username === username
     );
-    console.log("check item->", item);
+    //console.log("check item->", item);
     if (item.length === 0) {
       return true;
     } 
@@ -41,8 +48,8 @@ export class FollowersFollowingsPage extends Component {
   
 
     render() {
-        const{userList,listOf}=this.state
-        const{firstname,lastname,username,id}=this.props.userData
+        const{userList,dataOf,userData}=this.props
+        const{firstname,lastname,username,id}=userData
         return (
           <div>
             <div className="UserFollowers">
@@ -51,7 +58,7 @@ export class FollowersFollowingsPage extends Component {
               </div>
               <div id="logeed-username"> @{username}</div>
               {
-                listOf==='followers' ?
+                dataOf==='followers' ?
                  <div id="upper-buttons">
                 <button
                   id="btn-followers"
@@ -77,9 +84,9 @@ export class FollowersFollowingsPage extends Component {
                 
                 
               }
-              {console.log('list of-----',listOf)}
+              {console.log('list of-----',dataOf)}
               {
-                  listOf==='followers' ?(
+                  dataOf==='followers' ?(
 
 
                     <div id="followers-list">
@@ -94,7 +101,7 @@ export class FollowersFollowingsPage extends Component {
                     <div id="followers-username">
                       <Link
                         onClick={() => {
-                          this.viewProfile(follow.user.id);
+                          this.viewProfile(follow.user.id)
                         }}
                       >
                         @{follow.user.username}
@@ -104,7 +111,7 @@ export class FollowersFollowingsPage extends Component {
                           <button
                             type="button"
                             onClick={() => {
-                              this.followUserBtn(follow.user.id);
+                              this.handleFollow(follow.user.id);
                             }}
                           >
                             follow

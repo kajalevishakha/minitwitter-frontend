@@ -55,6 +55,10 @@
     font-size: 16px;
     
 }
+.profileForm img{
+    height: 100px;
+    width: 100px;
+}
 
 .profileForm button{
     height: 40px;

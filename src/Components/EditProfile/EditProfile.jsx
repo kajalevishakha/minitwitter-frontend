@@ -84,6 +84,7 @@ export class EditProfile extends Component {
                     shouldCallUI===true ?
                     <EditProfilePage userData={userData}
                                     saveBio={this.saveBio}
+                                    setProfilePic={this.setProfilePic}
                     />:
                     null
 

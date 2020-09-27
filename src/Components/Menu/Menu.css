@@ -215,19 +215,20 @@ margin-right: 30px;
 }
 .searchBar input{
     
+    margin-top: 15px;
     height: 30px;
+    width: 100%;
     padding: 10px 10px;
     border-radius: 50px;
     border: none;
-    background-color: rgb(206, 202, 202);
+    background-color: rgb(231, 230, 230);
     color: black;
     font-weight: bolder;
     font-size: 15px;
 }
 
 .searchBar input::placeholder{
-    color: black;
-    font-weight: bolder;
+    color:black;
     font-size: 20px;
 }
 
@@ -236,6 +237,7 @@ margin-right: 30px;
     margin-top: 10px;
     height: 40px;
     background-color:white ;
+    /* border: none; */
     border-radius: 50px;
     border:2px solid skyblue;
     color:  rgb(35, 154, 233);
@@ -253,10 +255,40 @@ margin-right: 30px;
     font-weight: bolder;
 }
 
+#close-serach{
+    border:none;
+    height: 0px;
+    width: 0px;
+    color: red;
+    transform: translate(220px,-55px);
+}
+#close-serach:hover{
+    border:none;
+    height: 0px;
+    width: 0px;
+    color: red;
+    font-size: 20px;
+    transform: translate(220px,-55px);
+}
+
+.searchResult{
+
+    margin-top: 5px;
+    height: 300px;
+    width: 400px;
+    border: 1px solid rgb(240, 249, 255);
+    background-color: rgb(240, 249, 255) ;
+    /* border-bottom:20px solid rgb(35, 154, 233); */
+    text-align: left;
+    overflow: -moz-hidden-unscrollable;
+    border-radius: 20px;
+
+}
+
 .users{
 
-    /* margin-top: 20px; */
-    height: 710.5px;
+    margin-top: 10px;
+    height: 580px;
     width: 400px;
     border: 1px solid rgb(240, 249, 255);
     background-color: rgb(240, 249, 255) ;
@@ -268,8 +300,8 @@ margin-right: 30px;
 }
 .users:hover{
 
-    /* margin-top: 20px; */
-    height: 700px;
+    margin-top: 10px;
+    height: 560px;
     width: 400px;
     border: 1px solid skyblue;
     /* border-bottom:20px solid rgb(35, 154, 233); */
