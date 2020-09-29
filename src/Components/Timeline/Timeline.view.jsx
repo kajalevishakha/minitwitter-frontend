@@ -9,15 +9,17 @@ export class TimelinePage extends Component {
         this.state = {
              timelineContent:this.props.timelineContent
         }
-        console.log('timeline array--',this.state.timelineContent)
+        
     }
 
     handleViewProfile=userid=>{
-      this.props.history.push('/minitwitter/userprofile/'+userid)
+      const{history}=this.props
+      history.push(`/minitwitter/userprofile/${userid}`)
+
     }
     
     render() {
-        console.log("props of timeline content--",this.props);
+
         const { timelineContent } = this.state;
         
         return (

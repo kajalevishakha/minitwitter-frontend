@@ -26,6 +26,16 @@
     border-bottom:1px solid rgb(35, 154, 233) ;
 }
 
+#empty-list-msg{
+    top:0;
+    left: 0;
+    background-color:white ;
+    font-size: 15px;
+      color:  rgb(35, 154, 233);
+      font-weight: bolder;
+      cursor: pointer;
+      transform: translate(700px,-650px);
+}
 
 
 #followers-list{

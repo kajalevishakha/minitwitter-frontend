@@ -5,6 +5,8 @@ import { withRouter } from "react-router-dom";
 
 export class Landingpage extends Component {
   render() {
+
+    const{history}=this.props
     return (
       <div className="App">
         {/* Whole page is splitted in two parts */}
@@ -22,14 +24,14 @@ export class Landingpage extends Component {
           <button
             id="btn-SignIn"
             type="Submit"
-            onClick={() => this.props.history.push("/minitwitter/registration/")}
+            onClick={() => history.push("/minitwitter/registration/")}
           >
             Sign Up
           </button>
           <button
             id="btn-LogIn"
             type="Submit"
-            onClick={() => this.props.history.push("/minitwitter/login/")}
+            onClick={() => history.push("/minitwitter/login/")}
           >
             Log In
           </button>

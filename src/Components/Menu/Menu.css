@@ -283,6 +283,12 @@ margin-right: 30px;
     overflow: -moz-hidden-unscrollable;
     border-radius: 20px;
 
+
+}
+
+#search-result-username{
+    font-size: 15px;
+    font-weight: lighter;
 }
 
 .users{

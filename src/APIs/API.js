@@ -1,43 +1,24 @@
 import axios from "axios";
-const header={
-  "Content-Type": "application/json",
-  Authorization: "token " + localStorage.getItem("token"),
+
+
+function returnHeader(){
+  return {
+    "Content-Type": "application/json",
+    Authorization: "token " + localStorage.getItem("token"),
+  };
 }
-
-class headerrr{
-  constructor(){
-    this.header=
-    {
-      "Content-Type": "application/json",
-      Authorization: "token " + localStorage.getItem("token"),
-    };
-    const token=localStorage.getItem('token')
-    console.log('tocken in constructor headerrr--',token)
-  }
-}
-
-const tokenobj=new headerrr()
-
-var obj={}
 
 class Calls {
   constructor() {
-    this.headers = {
-      "Content-Type": "application/json",
-      Authorization: "token " + localStorage.getItem("token"),
-    };
-    this.temp=tokenobj.header
-    const token=localStorage.getItem('token')
-    console.log('tocken in constructor--',token)
+    this.headers = returnHeader();
+    
   }
 
-
+//Function to call login api
   loginapi = (credentials) => {
-    console.log("in function call--", credentials);
-
+    
     const name = credentials.username;
     const pass = credentials.password;
-    
 
     return axios
       .post("http://127.0.0.1:8020/minitwitter/login/", {
@@ -45,25 +26,22 @@ class Calls {
         password: pass,
       })
       .then((response) => {
-        console.log("login-", response);
+        // console.log("login-", response);
 
         if (response["status"] === 200) {
-          console.log("token after rgtn ", response.data.token);
           localStorage.setItem("token", response.data.token);
         }
-        obj=new headerrr()
-        console.log('obj--',obj.header)
-        this.temp=obj.header
-        console.log('temp--',this.temp)
+        this.headers=returnHeader();
         return response.data;
       })
       .catch((error) => {
         console.log(error.response.status);
       });
-  };
+  }
 
+  //Function to call registration api
   registrationAPI = (userData) => {
-    console.log("in registration api ", userData);
+    
     const { firstname, lastname, username, email, password } = userData;
     return axios
       .post("http://127.0.0.1:8020/minitwitter/users/", {
@@ -74,181 +52,164 @@ class Calls {
         password: password,
       })
       .then((response) => {
-        console.log("registration response-->", response);
+        //console.log("registration response-->", response);
         return response
       })
       .catch((error) => {
-        console.log(error.response["status"]);
         return error.response["status"];
       });
-  };
+  }
 
+  //Function to call currentuser api
   currentUserAPI = () => {
 
-    console.log('token in current user api--',this.temp)
-    
-    axios.defaults.headers = this.temp
-
+    axios.defaults.headers = this.headers
     return axios
       .get("http://127.0.0.1:8020/minitwitter/current_user/")
       .then((response) => {
-        console.log("response of current user api -->", response);
+        //console.log("response of current user api -->", response);
         return response;
       })
       .catch((error) => {
-        console.log(error);
-        const errorCode = error["status"];
-        this.props.errorCode(errorCode);
+        console.log('werr',error)
+        return error
       });
-  };
+  }
 
+  //Function to call post tweet api
   postTweetAPI = (tweet) => {
-    axios.defaults.headers = this.temp;
-
-    console.log(" in post tweet api -- ", tweet);
+    axios.defaults.headers = this.headers;
 
     return axios
       .post("http://127.0.0.1:8020/minitwitter/tweets/", { content: tweet })
       .then((response) => {
-        console.log("posting tweet -->", response);
+        //console.log("posting tweet -->", response);
         return response["status"];
       })
       .catch((error) => {
-        console.log(error);
         return error["status"];
       });
-  };
+    }
+
+  //Function to call all users api
   fetchAllUsersAPI = () => {
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
     return axios
       .get("http://127.0.0.1:8020/minitwitter/users/")
       .then((response) => {
-        console.log("response of all users api-->", response);
+        //console.log("response of all users api-->", response);
         return response;
       })
       .catch((error) => {
-        this.props.errorCode(error["status"]);
+        
         return error["status"];
       });
-  };
+  }
 
-  editProfileAPI = (userData) => {
-    const { id, bio } = userData;
-
-    axios.defaults.headers = this.temp;
-
-    return axios
-      .put("http://127.0.0.1:8020/minitwitter/users/" + id + "/", {
-        bio: bio,
-      })
-      .then((response) => {
-        console.log("response after edit-->", response);
-        return response["status"];
-      })
-      .catch((error) => {
-        return error["status"];
-      });
-  };
-
+  //Function to call user profile api
   fetchProfileAPI = (id) => {
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
 
     return axios
-      .get("http://127.0.0.1:8020/minitwitter/users/" + id + "/")
+      .get(`http://127.0.0.1:8020/minitwitter/users/${id}/`)
       .then((response) => {
-        console.log("response of edit api -->", response);
+        //console.log("response of fetch profile api -->", response);
         return response;
       })
       .catch((error) => {
-        console.log(error["status"]);
         return error["status"];
       });
   };
 
+  //Function to call timeline api
   fetchTimelineAPI = (id) => {
-    axios.defaults.headers =this.temp
+    axios.defaults.headers =this.headers;
     return axios
       .get("http://127.0.0.1:8020/minitwitter/tweets/", { params:{list:'timeline'} })
       .then((response) => {
-        console.log("response of timeline-", response);
+        //console.log("response of timeline-", response);
         return response;
       })
       .catch((error) => {
-        console.log(error.response["status"]);
         return error.response["status"];
       });
-  };
+  }
+
+  //Function to call get followers api
   fetchFollowersAPI = (id) => {
-    axios.defaults.headers = this.temp
+    axios.defaults.headers = this.headers;
     return axios
-      .get("http://127.0.0.1:8020/minitwitter/users/" + id + "/follow/",{params:{list:'followers'}})
+      .get(`http://127.0.0.1:8020/minitwitter/users/${id}/follow/`,{params:{list:'followers'}})
       .then((response) => {
-        console.log("followers api response -->", response.data);
+        //console.log("followers api response -->", response.data);
         return response;
       })
       .catch((error) => {
         return error.response["status"];
       });
-  };
+  }
+
+  //Function to call fetch followings api
   fetchFollowingsAPI = (id) => {
     console.log("id in get following api--", id);
 
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
     return axios
-    .get("http://127.0.0.1:8020/minitwitter/users/" + id + "/follow/",{params:{list:'followings'}})
+    .get(`http://127.0.0.1:8020/minitwitter/users/${id}/follow/`,{params:{list:'followings'}})
       .then((response) => {
-        console.log("followings api response -->", response.data);
+        //console.log("followings api response -->", response.data);
         return response;
       })
       .catch((error) => {
         return error.response["status"];
       });
-  };
+  }
+
+  //Function to call follow user api
   followUserAPI = (id) => {
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
 
     return axios
-      .post("http://127.0.0.1:8020/minitwitter/users/" + id + "/follow/", {
+      .post(`http://127.0.0.1:8020/minitwitter/users/${id}/follow/`, {
         following_id: id,
       })
       .then((response) => {
-        console.log("successfully followed", response);
+        //console.log("successfully followed", response);
         return response["status"];
       })
       .catch((error) => {
         console.log(error.response);
         return error.response["status"];
       });
-  };
+  }
+
+  //Function to call unfollow user api
   unfollowUserAPI = (userData) => {
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
 
     const following_id = userData.unfollowid;
     const id = userData.logid;
 
     return axios
       .delete(
-        "http://127.0.0.1:8020/minitwitter/users/" +
-          id +
-          "/unfollow/" +
-          following_id +
-          "/"
+        `http://127.0.0.1:8020/minitwitter/users/${id}/unfollow/${following_id}/`
       )
       .then((response) => {
-        console.log(response);
+        
         return response["status"];
       })
       .catch((error) => {
         return error.response["status"];
       });
-  };
+  }
 
+  //Function to call search api
   searchAPI=searchValue=>{
-    axios.defaults.headers = this.temp;
+    axios.defaults.headers = this.headers;
     return axios
     .get("http://127.0.0.1:8020/minitwitter/search/",{params:{search:searchValue}})
     .then(response=>{
-      console.log('response of search api--',response)
+      //console.log('response of search api--',response)
       return response
     })
     .catch(error=>{
@@ -256,6 +217,19 @@ class Calls {
     })
   }
 
+  //Function to call edit pofile api
+  setProfilePicAPI= (profilePic,id) =>{
+    axios.defaults.headers = this.headers;
+    return axios
+    .patch(`http://127.0.0.1:8020/minitwitter/users/${id}/`,profilePic)
+    .then(response=>{
+      //console.log('response of profile pic--',response)
+      return response
+    })
+    .catch(error=>{
+      return error['status']
+    })
+  }
 }
 const API_Calls = new Calls();
 export default API_Calls;

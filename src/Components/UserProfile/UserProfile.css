@@ -30,6 +30,20 @@ top:0;
     font-size: 80px;
 }
 
+.profile-img{
+    margin-top: 15px;
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+}
+#tweet-profile-img{
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    transform: translate(0px,15px);
+}
+
 #user-id{
     font-size: 15px;
     color: black;
@@ -104,7 +118,7 @@ top:0;
     
 }
 #twitter{
-    margin-left: 35px;
+    margin-left: 50px;
     font-weight: lighter;
 }
 #user-tweet{

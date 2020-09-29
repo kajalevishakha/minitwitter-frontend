@@ -29,7 +29,6 @@ export default class Routes extends Component {
 
     }
     loggedUserData=data=>{
-        console.log('parent router-->',data)
         this.setState({
             id:data.id,
             username:data.username,

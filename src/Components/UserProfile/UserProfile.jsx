@@ -7,7 +7,6 @@ export class UserProfile extends Component {
   constructor(props) {
     super(props);
 
-    console.log("parent props--", this.props);
     const { id } = this.props.match.params;
 
     this.state = {
@@ -17,10 +16,12 @@ export class UserProfile extends Component {
       username: "",
       id: id,
       bio: "",
+      profilePic: "",
     };
   }
 
   makeAPICall = (id) => {
+    const { history } = this.props;
     API_Calls.fetchProfileAPI(id)
       .then((response) => {
         console.log(
@@ -32,22 +33,17 @@ export class UserProfile extends Component {
           lastname: response.data.user["last_name"],
           username: response.data.user["username"],
           bio: response.data["bio"],
+          profilePic: response.data["profile_picture"],
           tweets: response.data.user.tweets,
         });
       })
-      .catch((code) => {
-        if (code === 504 || code === 401 || code === 400) {
-          this.props.history.push("/");
-        }
+      .catch((error) => {
+        console.log("error in user profile--", error);
+        history.push("/");
       });
   };
 
-
   componentDidUpdate(props, state) {
-    // console.log('prev states in component did update--',state)
-    // console.log('prev props in component did update--',props)
-    // console.log('current state--',this.state)
-    // console.log('current props--',this.props)
     const prevPropID = props.match.params.id;
     const currentPropID = this.props.match.params.id;
     if (currentPropID !== prevPropID) {

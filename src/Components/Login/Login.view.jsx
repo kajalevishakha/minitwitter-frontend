@@ -18,7 +18,7 @@ class Login extends Component {
    
     handleLogIN=event=>{
 
-        const{userName,passWord,token}=this.state
+        const{userName,passWord}=this.state
 
         const loginCredentials={
             username:userName,

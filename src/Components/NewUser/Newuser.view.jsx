@@ -14,8 +14,9 @@ export class NewUser extends Component {
   }
 
   buttonClick = (event) => {
+    const{history,match}=this.props
     event.preventDefault();
-    this.props.history.push("/minitwitter/userprofile/edit/" + this.props.match.params.id);
+    history.push("/minitwitter/userprofile/edit/" + match.params.id);
   };
    
 

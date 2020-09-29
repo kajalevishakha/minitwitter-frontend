@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom'
 
 import API_Calls from './../../APIs/API'
 import TimelinePage from './Timeline.view'
+import EmptyData from './../EmptyData/EmptyData'
 
 export class Timeline extends Component {
 
@@ -13,13 +14,14 @@ export class Timeline extends Component {
         this.state = {
              timelineContent:[],
              id:id,
-             shouldCallUI:false
+             
         }
     }
 
     componentDidMount(){
 
         const{id}=this.state
+        const{history}=this.props
 
         API_Calls.fetchTimelineAPI(id).then(response=>{
             console.log('response from the time line api in parent--',response)
@@ -32,7 +34,7 @@ export class Timeline extends Component {
         .catch(code=>{
 
             if (code === 401 || code===400) {
-                this.props.history.push("/");
+                history.push("/");
             }
 
         })
@@ -49,8 +51,8 @@ export class Timeline extends Component {
             <div>
                 {
                     timelineContent.length>0 ?
-                    <TimelinePage timelineContent={this.state.timelineContent}/>:
-                    <h1>Loading </h1>
+                    <TimelinePage timelineContent={timelineContent}/>:
+                    <EmptyData/>
                 }
             </div>
         )

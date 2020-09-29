@@ -37,6 +37,29 @@
 
     
 }
+#input-img{
+    border:none;
+    background-color: #fff;
+    display: none;
+}
+#upload-profile{
+
+    color:black;
+    font-weight: bolder;
+    font-size: 15px;
+    padding: 5px 5px;
+    border: 2px solid black;
+    cursor: pointer;
+    background-color: rgb(230, 248, 255)
+
+}
+
+#img-upload-msg{
+    color: rgb(45, 172, 45);
+    font-size: 18px;
+    font-weight: bold;
+    transform: translate(180px,-15px);
+}
 
 #firstname,#lastname,#userName,#bio-{
 

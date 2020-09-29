@@ -43,8 +43,9 @@ export class RegistrationPage extends Component {
   // Function to perform action on button click
   handleRegister = (event) => {
 
+    const{userData}=this.props
     event.preventDefault()
-    this.props.userData(this.state)
+    userData(this.state)
     
 
   }

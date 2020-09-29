@@ -17,7 +17,7 @@ export class EditProfilePage extends Component {
             username:username,
             bio:bio,
             id:id,
-            profilPic:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            profilPic:"https://www.google.com/url?sa=i&url=https%3A%2F%2Fthenounproject.com%2Fterm%2Fuser-profile%2F&psig=AOvVaw247_pi6gGIHLZ7XGrYQfPf&ust=1601350497050000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNjxz9f1iuwCFQAAAAAdAAAAABAD",
             showPic:false
              
         }
@@ -33,22 +33,24 @@ export class EditProfilePage extends Component {
 
     handleSave = (event) => {
 
-        console.log('edited bio--',this.state.bio)
-        this.props.saveBio(this.state.bio)
-        
+        const{saveEdits}=this.props
+        const{bio}=this.state
+        const formData=new FormData();
+        if(this.state.profilPic.name!==undefined){
+
+          formData.append("profile_picture",this.state.profilPic,this.state.profilPic.name)
+        }
+      
+        formData.append("bio",bio)
+        saveEdits(formData)
       }
     
       selectImageHandler=event=>{
 
         console.log('image selected--',event.target.files[0])
-        this.setState({profilPic:event.target.files[0]})
+        this.setState({profilPic:event.target.files[0],showPic:true})
       }
-      uploadImgHandler=()=>{
-        console.log('uploaded img--',this.state.profilPic.name)
-        this.props.setProfilePic(this.state.profilPic)
-        this.setState({showPic:true})
-        
-      }
+      
     
 
     render() {
@@ -59,14 +61,7 @@ export class EditProfilePage extends Component {
               <div className="Profile-">
                 <div id="label-upper"> Edit Profile </div>
                 <div className="profileForm">
-                  {
-                    showPic===true ?
-                    <img src={this.state.profilPic.name } alt={'profile ic'}></img>:null
-                  }
-                  <input type='file'
-                  onChange={this.selectImageHandler}
-                  ></input>
-                  <button onClick={this.uploadImgHandler}>Upload</button>
+
                   <form>
                     <label id="label-create-edit-profile">First Name</label>
                     <input
@@ -103,7 +98,15 @@ export class EditProfilePage extends Component {
                       value={bio}
                       onChange={this.updateInputValue}
                     ></input>
-      
+
+                    <label id="upload-profile"> Choose Profile Photo
+                    <input type='file'
+                      onChange={this.selectImageHandler}
+                      id="input-img"
+                    >
+                    </input>
+                    </label>{showPic===true ? <div id="img-upload-msg">Selected!</div>:null}
+                    <br></br>
                     <button type="button" onClick={this.handleSave}>
                       SAVE
                     </button>
