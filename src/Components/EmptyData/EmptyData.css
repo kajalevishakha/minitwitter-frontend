@@ -1,0 +1,29 @@
+.Pages-{
+
+    top:0;
+    height: 500px;
+    width: 540px;
+    border: 1px solid rgba(0,0,0,.1);
+    padding: 20px 28.77px; 
+    transform:translate(493px,-662px); 
+    text-align: center;
+    overflow: hidden;
+    
+  }
+
+  /* #empty-list-msg{
+    background-color:white ;
+    font-size: 15px;
+      color:  rgb(35, 154, 233);
+      font-weight: bolder;
+      cursor: pointer;
+      transform: translate(700px,-650px);
+  } */
+
+  .Pages- h3{
+    margin-top: 5%;
+    font-style: italic;
+    color: blue;
+    text-align: center;
+    margin-bottom: 20px;
+  }
